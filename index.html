@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>文化QQ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: 卡帶機開場（含節目介紹）→ 每位來賓一捲卡帶（A/B 面＝上下集：影片＋簡介＋來賓，下方章節曲目表＋現場照片拼貼）→ 製作團隊 → Email 聯絡。單一暖紙色調，刻意不做深色版。 */
+:root{
+  --paper:#efe3c8; --paper-2:#f6ecd6; --cream:#f6e7c1; --butter:#f3d98a;
+  --ink:#2b2622; --ink-2:#5c4a3a; --muted:#7a6650; --line:#d6c39c;
+  --mustard:#eab33f; --terracotta:#cf5f3a; --green:#3f6447; --sage:#8fa57f; --rust:#8f3a26; --teal:#2f5a4f; --orange:#e98a4f; --brown:#5a4632;
+  --pixel:'DotGothic16', 'Noto Sans TC', monospace;
+  --hand:'LXGW WenKai TC', 'Noto Serif TC', serif;
+  --body:'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.75}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--ink)}
+a{color:var(--rust)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--terracotta);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.pixel{font-family:var(--pixel);letter-spacing:.04em}
+h1,h2,h3,h4,h5{text-wrap:balance;margin:0}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--ink);color:var(--cream)}
+.bar .wrap{display:flex;align-items:center;gap:16px;min-height:56px;flex-wrap:wrap;padding-block:6px}
+.brand{font-family:var(--pixel);font-size:22px;color:var(--cream);text-decoration:none;display:flex;align-items:center;gap:10px}
+.mini-reels{display:inline-flex;gap:3px}
+.mini-reels i{width:14px;height:14px;border-radius:50%;border:3px dotted var(--mustard);display:block}
+.bar nav{display:flex;gap:4px 18px;flex-wrap:wrap;margin-left:auto;font-size:14px}
+.bar nav a{color:var(--cream);text-decoration:none;font-family:var(--pixel)}
+.bar nav a:hover{color:var(--mustard)}
+.mute{background:transparent;border:1.5px solid var(--cream);color:var(--cream);font-family:var(--pixel);font-size:13px;border-radius:999px;padding:4px 12px;min-height:36px;cursor:pointer}
+.mute[aria-pressed="true"]{border-color:var(--terracotta);color:var(--terracotta)}
+
+/* ---------- opener: deck + about ---------- */
+.opener{padding-block:40px 48px}
+.opener .wrap{max-width:1120px}
+.eyebrow{font-family:var(--pixel);font-size:14px;color:var(--rust);letter-spacing:.12em;margin:0 0 8px}
+.opener h1{font-family:var(--pixel);font-weight:400;font-size:clamp(56px,10vw,96px);line-height:1;color:var(--ink)}
+.tagline{font-family:var(--body);font-weight:700;font-size:clamp(20px,2.6vw,28px);line-height:1.5;margin:16px 0 10px;max-width:30em}
+.tagline em{font-style:normal;background:var(--mustard);padding:0 6px;border-radius:3px}
+.about{max-width:34em;color:var(--ink-2);margin:0;font-size:18px}
+/* slim tape-deck strip */
+.deck{display:flex;align-items:center;gap:12px;max-width:560px;margin-top:24px;background:var(--brown);border-radius:14px;padding:10px 12px;box-shadow:0 8px 18px rgba(60,40,20,.25)}
+.win{width:104px;height:50px;flex-shrink:0;display:block}
+.reel{transform-box:fill-box;transform-origin:center}
+.playing .reel{animation:spin 1.6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lcd{flex:1;min-width:0;background:#1d1915;border-radius:5px;padding:5px 10px;display:flex;flex-direction:column;justify-content:center;min-height:48px}
+.counter{font-family:var(--pixel);color:#ff9a3c;font-size:18px;line-height:1.2;letter-spacing:.14em;font-variant-numeric:tabular-nums}
+.status{margin:0;font-family:var(--pixel);font-size:12px;line-height:1.3;color:#d9c9a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.keys{display:flex;gap:8px;flex-shrink:0}
+.key{font-family:var(--pixel);font-size:15px;min-width:48px;min-height:48px;padding:0 12px;border:none;border-radius:6px;background:#d9c9a8;color:var(--ink);cursor:pointer;box-shadow:0 4px 0 #8c7a5c;transition:transform .06s,box-shadow .06s}
+.key:active,.key.down{transform:translateY(3px);box-shadow:0 1px 0 #8c7a5c}
+.key.play{background:var(--mustard);min-width:92px}
+.eplinks{margin-top:24px;max-width:860px}
+.eplinks-h{margin:0 0 8px;font-family:var(--pixel);font-size:13px;letter-spacing:.12em;color:var(--rust)}
+.eplist{display:grid;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px}
+.epl{display:flex;align-items:stretch;min-height:44px;border-radius:6px;overflow:hidden;background:var(--paper-2);border:1.5px solid var(--ink);color:var(--ink);text-decoration:none;min-width:0}
+.epl b{flex:0 0 auto;display:flex;align-items:center;padding:0 9px;font-family:var(--pixel);font-weight:400;font-size:15px;letter-spacing:.04em}
+.epl span{display:flex;align-items:center;padding:0 10px;font-size:14px;font-weight:700;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.epl:hover{background:var(--cream)}
+.facts{display:flex;flex-wrap:wrap;gap:6px 8px;list-style:none;margin:18px 0 0;padding:0}
+.facts li{font-family:var(--pixel);font-size:14px;color:var(--cream);padding:4px 10px;border-radius:4px}
+.facts li:nth-child(1){background:var(--green)}
+.facts li:nth-child(2){background:var(--terracotta)}
+.facts li:nth-child(3){background:var(--teal)}
+.facts li:nth-child(4){background:var(--rust)}
+
+/* ---------- episodes ---------- */
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:2px solid var(--ink);padding-top:18px;margin-bottom:28px}
+.section-head h2{font-family:var(--pixel);font-weight:400;font-size:clamp(30px,4vw,44px);line-height:1.1}
+.section-head p{margin:0;color:var(--ink-2);max-width:32em}
+.episodes{padding-block:24px 40px}
+.tapes{display:flex;flex-direction:column;gap:44px}
+.tape{background:var(--shell);border-radius:20px;padding:14px;position:relative;scroll-margin-top:80px}
+.tape::before,.tape::after{content:"";position:absolute;top:8px;width:8px;height:8px;border-radius:50%;background:#d9c9a8;border:1px solid #1d1915}
+.tape::before{left:8px}.tape::after{right:8px}
+.label{background:var(--paper-2);border-radius:10px;overflow:hidden}
+.label-top{display:flex;flex-wrap:wrap;align-items:stretch}
+.label-top .no{background:var(--title);color:var(--fg);font-family:var(--pixel);padding:10px 16px;font-size:18px;display:flex;align-items:center}
+.label-top .who{background:var(--butter);padding:10px 16px;flex:1 1 220px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;min-width:0}
+.label-top .who h3{font-family:var(--hand);font-size:26px;line-height:1.2}
+.label-top .who span{color:var(--ink-2);font-size:14px}
+.tag2{font-family:var(--pixel);font-size:12px;background:var(--ink);color:var(--cream)!important;padding:1px 8px;border-radius:3px;align-self:center}
+.sides{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px;background:var(--band);scroll-margin-top:72px}
+.side-btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:6px 12px;border:2px solid var(--ink);border-radius:8px;background:var(--paper-2);color:var(--ink);cursor:pointer;font-family:var(--body);font-size:16px;font-weight:700;line-height:1.3}
+.side-btn .sd{font-family:var(--pixel);font-weight:400;font-size:18px}
+.side-btn .hint{font-family:var(--pixel);font-size:14px;color:var(--rust)}
+.side-btn:hover{background:var(--cream)}
+.side-btn[aria-selected="true"],.side-btn[aria-selected="true"]:hover{background:var(--ink);color:var(--cream);cursor:default}
+.side-btn[aria-selected="true"] .hint{display:none}
+.flip{margin-top:14px;width:100%;min-height:52px;border:2px dashed var(--ink);background:transparent;border-radius:8px;font-family:var(--body);font-weight:700;font-size:15px;color:var(--ink);cursor:pointer;padding:6px 12px}
+.flip:hover{background:var(--cream)}
+.label-body{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+.screen{position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,var(--glow) 0%,#3a2a1c 62%,#16110c 100%);color:#fff}
+.screen::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);pointer-events:none}
+.screen::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%);pointer-events:none}
+.osd{position:absolute;left:16px;right:16px;font-family:var(--pixel);font-size:16px;display:flex;justify-content:space-between;text-shadow:1.5px 0 rgba(224,80,40,.75),-1.5px 0 rgba(60,170,200,.6);z-index:1}
+.osd.top{top:12px}.osd.bottom{bottom:12px}
+.osd .date{color:#ff9a3c;text-shadow:0 0 6px rgba(255,120,30,.8)}
+.screen-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:1;text-align:center;padding:0 16px}
+.screen-mid .ep{font-family:var(--pixel);font-size:clamp(40px,7vw,72px);line-height:1;color:var(--cream);text-shadow:-2px 0 rgba(255,50,80,.5),2px 0 rgba(50,210,255,.45)}
+.play-link{display:inline-flex;align-items:center;gap:10px;background:var(--cream);color:var(--ink);text-decoration:none;font-family:var(--pixel);font-size:16px;padding:10px 18px;border-radius:999px;min-height:48px}
+.play-link:hover{background:var(--mustard)}
+.play-link svg{width:18px;height:18px}
+.info{padding:22px 22px 20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.info .kicker{font-family:var(--pixel);font-size:13px;color:var(--rust);letter-spacing:.1em;margin:0}
+.info h4{font-family:var(--hand);font-size:26px;line-height:1.3}
+.info p{margin:0;color:var(--ink-2)}
+.meta{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--pixel);font-size:13px}
+.meta span{background:var(--cream);border:1px solid var(--line);border-radius:4px;padding:2px 8px}
+.guest-line{border-top:1px solid var(--line);padding-top:12px}
+.guest-line .gk{font-family:var(--pixel);font-size:12px;color:var(--rust);letter-spacing:.1em}
+.guest-line .gn{color:var(--ink);font-weight:700}
+.guest-line .gn span{font-weight:400;color:var(--ink-2);font-size:14px}
+.guest-line .gb{font-size:14px;line-height:1.7}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:6px;font-weight:700;font-size:14px;text-decoration:none;align-self:flex-start}
+.btn.yt{background:var(--ink);color:var(--cream)}
+.btn.yt:hover{background:var(--rust)}
+.share{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.share-lb{font-family:var(--pixel);font-size:13px;color:var(--rust);margin-right:2px}
+.sh{display:inline-flex;align-items:center;justify-content:center;min-height:40px;min-width:44px;padding:0 14px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font-family:var(--body);font-size:14px;font-weight:700;text-decoration:none;cursor:pointer}
+.sh:hover{background:var(--ink);color:var(--cream)}
+.share-tip{margin:0;font-size:13px;color:var(--green)!important;font-weight:700}
+
+/* extras: chapters + photos */
+.extras{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);border-top:2px dashed var(--line)}
+.tracks{padding:20px 22px 22px;min-width:0}
+.extra-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.extra-head h5{font-family:var(--pixel);font-weight:400;font-size:18px}
+.extra-head span{font-size:12px;color:var(--muted)}
+.tracks ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tracks li{border-bottom:1px dashed var(--line)}
+.tracks li:last-child{border-bottom:none}
+.trk{display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:12px;align-items:center;padding:8px 4px;text-decoration:none;color:var(--ink);min-height:44px;border-radius:4px}
+a.trk:hover{background:var(--cream)}
+.trk time{font-family:var(--pixel);font-size:14px;background:var(--ink);color:#ff9a3c;border-radius:3px;text-align:center;padding:2px 0;font-variant-numeric:tabular-nums}
+.trk .tt{font-size:15px;line-height:1.5}
+.trk .go{font-family:var(--pixel);font-size:12px;color:var(--rust)}
+.trk.todo{color:var(--muted)}
+.trk.todo time{background:#cbbb98;color:var(--paper-2)}
+.photos{padding:20px 22px 22px;background:var(--cream);min-width:0}
+.mosaic{display:grid;gap:8px}
+.shot{margin:0;padding:0;border:2px solid var(--ink);background:var(--paper-2);position:relative;display:block;width:100%;min-width:0;cursor:zoom-in;overflow:hidden;font:inherit;color:var(--ink)}
+.shot .ph{display:flex;align-items:center;justify-content:center;width:100%;height:100%;aspect-ratio:4/3;font-size:12px;font-weight:700;text-align:center;padding:6px}
+.shot img{display:block;width:100%;height:100%;aspect-ratio:4/3;object-fit:cover}
+.shot img.fit-contain{object-fit:contain;background:#dfe9d8}
+.shot .cap{position:absolute;left:6px;right:auto;bottom:6px;background:var(--ink);color:var(--cream);font-size:11px;line-height:1.45;padding:2px 6px;border-radius:2px;max-width:calc(100% - 12px);text-align:left}
+.shot:hover .ph,.shot:hover img{filter:brightness(1.05)}
+.mosaic.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.mosaic.n3{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.mosaic.n3 .shot:first-child{grid-row:span 2}
+.mosaic.n3 .shot:first-child .ph,.mosaic.n3 .shot:first-child img{aspect-ratio:auto}
+.mosaic.n4{grid-template-columns:repeat(3,minmax(0,1fr))}
+.mosaic.n4 .shot:first-child{grid-column:span 3}
+.mosaic.n4 .shot:first-child .ph,.mosaic.n4 .shot:first-child img{aspect-ratio:16/9}
+.count{display:none;margin:6px 0 0;font-family:var(--pixel);font-size:12px;color:var(--ink-2);text-align:right}
+/* lightbox */
+[hidden]{display:none!important}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(29,25,21,.94);display:flex;align-items:center;justify-content:center;padding:max(56px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.lb-fig{margin:0;width:min(900px,100%);display:flex;flex-direction:column;gap:10px}
+.lb-img .ph,.lb-img img{display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:4/3;max-height:72vh;object-fit:contain;font-weight:700;color:var(--ink);border:2px solid var(--cream)}
+.lb-fig figcaption{display:flex;justify-content:space-between;gap:12px;color:var(--cream);font-size:14px}
+.lb button{position:absolute;width:48px;height:48px;border-radius:50%;border:none;background:var(--cream);color:var(--ink);font-family:var(--pixel);font-size:18px;cursor:pointer}
+.lb-close{top:max(8px,env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px))}
+.lb-prev{left:max(12px,env(safe-area-inset-left,0px));top:50%;transform:translateY(-50%)}
+.lb-next{right:max(12px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%)}
+.tape-foot{display:flex;justify-content:center;padding-top:12px}
+.tape-foot div{width:58%;height:34px;background:var(--base);clip-path:polygon(6% 0,94% 0,100% 100%,0 100%);display:flex;align-items:center;justify-content:space-between;padding:0 12%}
+.tape-foot i{width:10px;height:10px;border-radius:50%;background:#1d1915;display:block}
+
+/* ---------- team ---------- */
+.team{padding-block:32px}
+.credits{background:var(--paper-2);border:2px solid var(--ink);border-radius:10px;padding:20px 22px}
+.credits-intro{margin:0 0 16px;max-width:46em;color:var(--ink-2);word-break:keep-all;line-break:strict}
+.credits-intro b{color:var(--ink)}
+.crew{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 24px}
+.crew-item{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center;border-top:1px dashed var(--line);padding-top:14px;min-width:0}
+.av{position:relative;display:block;width:96px;height:96px;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);image-rendering:pixelated}
+.av svg{display:block;width:100%;height:100%}
+.av .pl{position:absolute;left:-2px;bottom:-2px;background:var(--ink);color:var(--mustard);font-family:var(--pixel);font-size:12px;line-height:1;padding:3px 5px}
+.crew-txt{min-width:0}
+.crew-txt p{margin:0}
+.crew-txt .role{font-family:var(--pixel);font-size:13px;color:var(--rust);letter-spacing:.1em}
+.crew-txt .nm{font-size:17px;font-weight:700;line-height:1.5}
+.crew-txt .org{font-size:13px;line-height:1.6;color:var(--ink-2)}
+.credit-list{margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 24px}
+.credit-list > div{border-top:1px dashed var(--line);padding-top:10px;min-width:0}
+.credit-list dt{font-family:var(--pixel);font-size:13px;color:var(--rust);letter-spacing:.1em}
+.credit-list dd{margin:2px 0 0}
+.credit-list dd b{display:block;font-size:17px;line-height:1.5}
+.credit-list dd span{display:block;font-size:13px;line-height:1.6;color:var(--ink-2)}
+
+/* ---------- contact ---------- */
+.contact{padding-block:24px 64px}
+.contact-box{background:var(--terracotta);color:var(--cream);border-radius:12px;padding:28px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px;align-items:center}
+.contact-box h2{font-family:var(--pixel);font-weight:400;font-size:clamp(26px,3.4vw,36px)}
+.contact-box p{margin:8px 0 0}
+.mail{background:var(--cream);color:var(--ink);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.mail .addr{font-family:var(--pixel);font-size:clamp(16px,2.2vw,20px);user-select:all;word-break:break-all;color:var(--ink);text-decoration:none}
+.mail .row{display:flex;gap:8px;flex-wrap:wrap}
+.mail .row a,.mail .row button{border:none;background:var(--ink);color:var(--cream);border-radius:6px;min-height:44px;padding:0 16px;font-weight:700;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none;font-family:var(--body)}
+.mail .row button{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+footer{background:var(--ink);color:#d9c9a8;font-size:13px}
+footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:860px){
+  .label-body,.extras{grid-template-columns:minmax(0,1fr)}
+  .credit-list,.crew{grid-template-columns:minmax(0,1fr)}
+  .contact-box{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:520px){
+  .win{width:84px;height:40px}
+  .deck{gap:10px;padding:8px 10px}
+  .status{display:none}
+  .lcd{flex:0 0 auto;align-items:center}
+  .key.play{flex:1}
+  .keys{flex:1}
+  .credit-list > div{display:grid;grid-template-columns:64px minmax(0,1fr);gap:8px}
+  .credit-list dd{margin:0}
+  .mosaic{display:flex!important;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .mosaic::-webkit-scrollbar{display:none}
+  .mosaic .shot{flex:0 0 84%;scroll-snap-align:start}
+  .mosaic .shot .ph,.mosaic .shot img{aspect-ratio:4/3!important}
+  .count{display:block}
+  .crew-item{grid-template-columns:76px minmax(0,1fr)}
+  .av{width:76px;height:76px}
+  .eplist{grid-template-rows:none;grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .epl span{padding:0 8px;font-size:13px}
+  .share-lb{width:100%}
+  .sh{flex:1 1 0;padding:0 8px}
+  .side-btn{flex-direction:column;gap:0;font-size:15px}
+  .side-btn .sd{font-size:16px}
+  .side-btn .hint{display:none}
+  .mute{order:2;margin-left:auto}
+  .bar nav{order:3;width:100%;margin-left:0;justify-content:space-between}
+  .tape-foot div{width:80%}
+  .trk{grid-template-columns:56px minmax(0,1fr)}
+  .trk .go{display:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.playing .reel{animation:none}}
+</style>
+
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="mini-reels" aria-hidden="true"><i></i><i></i></span>文化ＱＱ</a>
+    <nav aria-label="頁面導覽">
+      <a href="#episodes">單集節目</a>
+      <a href="#team">製作團隊</a>
+      <a href="#contact">合作邀約</a>
+    </nav>
+    <button class="mute" id="mute" type="button" aria-pressed="false">音效 開</button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="opener" aria-labelledby="show-title">
+    <div class="wrap">
+      <p class="eyebrow">PODCAST CULTURE QQ · SEASON 1</p>
+      <h1 id="show-title">文化ＱＱ</h1>
+      <p class="tagline">歡迎來到《文化 QQ》——<em>Cute &amp; Quirky</em>，用不一樣的方式來認識文化。</p>
+      <p class="about">我們不只談歷史，我們談的是此刻正在發生的事。</p>
+      <div class="deck" id="deck">
+        <svg class="win" viewBox="0 0 104 50" aria-hidden="true">
+          <rect x="1" y="1" width="102" height="48" rx="24" fill="#2b2622"/>
+          <circle cx="30" cy="25" r="19" fill="#6b4a33"/><circle cx="74" cy="25" r="13" fill="#6b4a33"/>
+          <rect x="44" y="19" width="16" height="12" fill="#3d332b" stroke="#f6e7c1" stroke-width="0.8"/>
+          <g class="reel"><circle cx="30" cy="25" r="9" fill="#f6e7c1"/><circle cx="30" cy="25" r="4.5" fill="none" stroke="#2b2622" stroke-width="2.4" stroke-dasharray="2.4 1.8"/><rect x="29" y="16" width="2" height="4" fill="#2b2622"/></g>
+          <g class="reel"><circle cx="74" cy="25" r="9" fill="#f6e7c1"/><circle cx="74" cy="25" r="4.5" fill="none" stroke="#2b2622" stroke-width="2.4" stroke-dasharray="2.4 1.8"/><rect x="73" y="16" width="2" height="4" fill="#2b2622"/></g>
+        </svg>
+        <div class="lcd">
+          <span class="counter" id="counter" aria-hidden="true">000</span>
+          <p class="status" id="status" aria-live="polite">PRESS PLAY</p>
+        </div>
+        <div class="keys">
+          <button class="key play" id="k-play" type="button">▶ PLAY</button>
+          <button class="key" id="k-stop" type="button" aria-label="停止">■</button>
+        </div>
+      </div>
+      <nav class="eplinks" aria-label="8 集快速連結">
+        <p class="eplinks-h">EPISODES · 快速收聽</p>
+        <div class="eplist" id="eplist"></div>
+      </nav>
+    </div>
+  </section>
+
+  <section class="episodes" id="episodes" aria-labelledby="ep-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="ep-title">單集節目</h2>
+        <p>每位來賓一捲卡帶。切換 A 面、B 面收看上集與下集；點章節時間可直接跳到該段落。</p>
+      </div>
+      <div class="tapes" id="tapes"></div>
+    </div>
+  </section>
+
+  <section class="team" id="team" aria-labelledby="team-title">
+    <div class="wrap">
+      <div class="section-head"><h2 id="team-title">製作團隊</h2></div>
+      <div class="credits">
+        <p class="credits-intro"><b>文資調研&nbsp;×&nbsp;議題企劃&nbsp;×&nbsp;成果轉譯</b>，<wbr>將研究轉化為平易敘事。</p>
+        <ul class="crew">
+          <li class="crew-item">
+            <span class="av"><svg viewBox="0 0 26 26" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="主持人 溫郁琳 像素頭像"><rect width="26" height="26" fill="#cf5f3a"/><rect x="1" y="2" width="1" height="1" fill="#f6e7c1" opacity=".7"/><rect x="23" y="5" width="1" height="1" fill="#f6e7c1" opacity=".7"/><rect x="22" y="3" width="1" height="1" fill="#f6e7c1" opacity=".5"/><rect x="9" y="4" width="2" height="1" fill="#2b2622"/><rect x="11" y="4" width="1" height="1" fill="#4a3d31"/><rect x="12" y="4" width="4" height="1" fill="#2b2622"/><rect x="7" y="5" width="12" height="1" fill="#2b2622"/><rect x="6" y="6" width="14" height="1" fill="#2b2622"/><rect x="5" y="7" width="5" height="1" fill="#2b2622"/><rect x="10" y="7" width="1" height="1" fill="#4a3d31"/><rect x="11" y="7" width="4" height="1" fill="#2b2622"/><rect x="15" y="7" width="1" height="1" fill="#4a3d31"/><rect x="16" y="7" width="5" height="1" fill="#2b2622"/><rect x="5" y="8" width="4" height="1" fill="#2b2622"/><rect x="9" y="8" width="8" height="1" fill="#f1c7a0"/><rect x="17" y="8" width="4" height="1" fill="#2b2622"/><rect x="4" y="9" width="4" height="1" fill="#2b2622"/><rect x="8" y="9" width="10" height="1" fill="#f1c7a0"/><rect x="18" y="9" width="4" height="1" fill="#2b2622"/><rect x="4" y="10" width="3" height="1" fill="#2b2622"/><rect x="7" y="10" width="1" height="1" fill="#f1c7a0"/><rect x="8" y="10" width="4" height="1" fill="#2b2622"/><rect x="12" y="10" width="2" height="1" fill="#f1c7a0"/><rect x="14" y="10" width="4" height="1" fill="#2b2622"/><rect x="18" y="10" width="1" height="1" fill="#f1c7a0"/><rect x="19" y="10" width="3" height="1" fill="#2b2622"/><rect x="4" y="11" width="3" height="1" fill="#2b2622"/><rect x="7" y="11" width="1" height="1" fill="#f1c7a0"/><rect x="8" y="11" width="1" height="1" fill="#2b2622"/><rect x="9" y="11" width="1" height="1" fill="#f1c7a0"/><rect x="10" y="11" width="1" height="1" fill="#2b2622"/><rect x="11" y="11" width="1" height="1" fill="#f1c7a0"/><rect x="12" y="11" width="2" height="1" fill="#2b2622"/><rect x="14" y="11" width="1" height="1" fill="#f1c7a0"/><rect x="15" y="11" width="1" height="1" fill="#2b2622"/><rect x="16" y="11" width="1" height="1" fill="#f1c7a0"/><rect x="17" y="11" width="1" height="1" fill="#2b2622"/><rect x="18" y="11" width="1" height="1" fill="#f1c7a0"/><rect x="19" y="11" width="3" height="1" fill="#2b2622"/><rect x="4" y="12" width="3" height="1" fill="#2b2622"/><rect x="7" y="12" width="2" height="1" fill="#f1c7a0"/><rect x="9" y="12" width="2" height="1" fill="#2b2622"/><rect x="11" y="12" width="4" height="1" fill="#f1c7a0"/><rect x="15" y="12" width="2" height="1" fill="#2b2622"/><rect x="17" y="12" width="2" height="1" fill="#f1c7a0"/><rect x="19" y="12" width="3" height="1" fill="#2b2622"/><rect x="3" y="13" width="4" height="1" fill="#2b2622"/><rect x="7" y="13" width="5" height="1" fill="#f1c7a0"/><rect x="12" y="13" width="2" height="1" fill="#d9a37e"/><rect x="14" y="13" width="5" height="1" fill="#f1c7a0"/><rect x="19" y="13" width="4" height="1" fill="#2b2622"/><rect x="3" y="14" width="4" height="1" fill="#2b2622"/><rect x="7" y="14" width="1" height="1" fill="#f1c7a0"/><rect x="8" y="14" width="1" height="1" fill="#e98a4f"/><rect x="9" y="14" width="8" height="1" fill="#f1c7a0"/><rect x="17" y="14" width="1" height="1" fill="#e98a4f"/><rect x="18" y="14" width="1" height="1" fill="#f1c7a0"/><rect x="19" y="14" width="4" height="1" fill="#2b2622"/><rect x="4" y="15" width="3" height="1" fill="#2b2622"/><rect x="7" y="15" width="3" height="1" fill="#f1c7a0"/><rect x="10" y="15" width="1" height="1" fill="#8f3a26"/><rect x="11" y="15" width="4" height="1" fill="#f1c7a0"/><rect x="15" y="15" width="1" height="1" fill="#8f3a26"/><rect x="16" y="15" width="3" height="1" fill="#f1c7a0"/><rect x="19" y="15" width="3" height="1" fill="#2b2622"/><rect x="4" y="16" width="3" height="1" fill="#2b2622"/><rect x="7" y="16" width="4" height="1" fill="#f1c7a0"/><rect x="11" y="16" width="4" height="1" fill="#8f3a26"/><rect x="15" y="16" width="4" height="1" fill="#f1c7a0"/><rect x="19" y="16" width="3" height="1" fill="#2b2622"/><rect x="3" y="17" width="5" height="1" fill="#2b2622"/><rect x="8" y="17" width="10" height="1" fill="#f1c7a0"/><rect x="18" y="17" width="5" height="1" fill="#2b2622"/><rect x="3" y="18" width="6" height="1" fill="#2b2622"/><rect x="9" y="18" width="2" height="1" fill="#d9a37e"/><rect x="11" y="18" width="4" height="1" fill="#f1c7a0"/><rect x="15" y="18" width="2" height="1" fill="#d9a37e"/><rect x="17" y="18" width="6" height="1" fill="#2b2622"/><rect x="3" y="19" width="3" height="1" fill="#2b2622"/><rect x="7" y="19" width="3" height="1" fill="#2b2622"/><rect x="10" y="19" width="1" height="1" fill="#d9a37e"/><rect x="11" y="19" width="4" height="1" fill="#f1c7a0"/><rect x="15" y="19" width="1" height="1" fill="#d9a37e"/><rect x="16" y="19" width="3" height="1" fill="#2b2622"/><rect x="20" y="19" width="3" height="1" fill="#2b2622"/><rect x="3" y="20" width="2" height="1" fill="#2b2622"/><rect x="9" y="20" width="2" height="1" fill="#1d1915"/><rect x="11" y="20" width="4" height="1" fill="#f1c7a0"/><rect x="15" y="20" width="2" height="1" fill="#1d1915"/><rect x="21" y="20" width="2" height="1" fill="#2b2622"/><rect x="7" y="21" width="5" height="1" fill="#1d1915"/><rect x="12" y="21" width="2" height="1" fill="#f1c7a0"/><rect x="14" y="21" width="5" height="1" fill="#1d1915"/><rect x="6" y="22" width="14" height="1" fill="#1d1915"/><rect x="5" y="23" width="16" height="1" fill="#1d1915"/><rect x="5" y="24" width="16" height="1" fill="#1d1915"/><rect x="5" y="25" width="16" height="1" fill="#1d1915"/></svg><span class="pl" aria-hidden="true">P1</span></span>
+            <div class="crew-txt"><p class="role">主持人</p><p class="nm">溫郁琳（Ann）</p><p class="org">文質丁公司 負責人<br>台灣文化資產學會 秘書長</p></div>
+          </li>
+          <li class="crew-item">
+            <span class="av"><svg viewBox="0 0 26 26" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="導演 洪爾佑 像素頭像"><rect width="26" height="26" fill="#3f6447"/><rect x="1" y="2" width="1" height="1" fill="#f6e7c1" opacity=".7"/><rect x="23" y="5" width="1" height="1" fill="#f6e7c1" opacity=".7"/><rect x="22" y="3" width="1" height="1" fill="#f6e7c1" opacity=".5"/><rect x="9" y="5" width="8" height="1" fill="#4a3d31"/><rect x="7" y="6" width="12" height="1" fill="#4a3d31"/><rect x="6" y="7" width="14" height="1" fill="#4a3d31"/><rect x="6" y="8" width="2" height="1" fill="#4a3d31"/><rect x="8" y="8" width="10" height="1" fill="#f1c7a0"/><rect x="18" y="8" width="2" height="1" fill="#4a3d31"/><rect x="5" y="9" width="1" height="1" fill="#d9a37e"/><rect x="6" y="9" width="14" height="1" fill="#f1c7a0"/><rect x="20" y="9" width="1" height="1" fill="#d9a37e"/><rect x="5" y="10" width="1" height="1" fill="#d9a37e"/><rect x="6" y="10" width="14" height="1" fill="#f1c7a0"/><rect x="20" y="10" width="1" height="1" fill="#d9a37e"/><rect x="6" y="11" width="2" height="1" fill="#f1c7a0"/><rect x="8" y="11" width="3" height="1" fill="#2b2622"/><rect x="11" y="11" width="4" height="1" fill="#f1c7a0"/><rect x="15" y="11" width="3" height="1" fill="#2b2622"/><rect x="18" y="11" width="2" height="1" fill="#f1c7a0"/><rect x="6" y="12" width="3" height="1" fill="#f1c7a0"/><rect x="9" y="12" width="1" height="1" fill="#2b2622"/><rect x="10" y="12" width="6" height="1" fill="#f1c7a0"/><rect x="16" y="12" width="1" height="1" fill="#2b2622"/><rect x="17" y="12" width="3" height="1" fill="#f1c7a0"/><rect x="6" y="13" width="6" height="1" fill="#f1c7a0"/><rect x="12" y="13" width="2" height="1" fill="#d9a37e"/><rect x="14" y="13" width="6" height="1" fill="#f1c7a0"/><rect x="6" y="14" width="6" height="1" fill="#f1c7a0"/><rect x="12" y="14" width="2" height="1" fill="#d9a37e"/><rect x="14" y="14" width="6" height="1" fill="#f1c7a0"/><rect x="6" y="15" width="14" height="1" fill="#f1c7a0"/><rect x="7" y="16" width="4" height="1" fill="#f1c7a0"/><rect x="11" y="16" width="4" height="1" fill="#8f3a26"/><rect x="15" y="16" width="4" height="1" fill="#f1c7a0"/><rect x="7" y="17" width="12" height="1" fill="#f1c7a0"/><rect x="8" y="18" width="2" height="1" fill="#d9a37e"/><rect x="10" y="18" width="6" height="1" fill="#f1c7a0"/><rect x="16" y="18" width="2" height="1" fill="#d9a37e"/><rect x="9" y="19" width="1" height="1" fill="#d9a37e"/><rect x="10" y="19" width="6" height="1" fill="#f1c7a0"/><rect x="16" y="19" width="1" height="1" fill="#d9a37e"/><rect x="7" y="20" width="3" height="1" fill="#b9c0c6"/><rect x="10" y="20" width="1" height="1" fill="#f6e7c1"/><rect x="11" y="20" width="4" height="1" fill="#2b2622"/><rect x="15" y="20" width="1" height="1" fill="#f6e7c1"/><rect x="16" y="20" width="3" height="1" fill="#b9c0c6"/><rect x="5" y="21" width="5" height="1" fill="#b9c0c6"/><rect x="10" y="21" width="1" height="1" fill="#8f979e"/><rect x="11" y="21" width="1" height="1" fill="#f6e7c1"/><rect x="12" y="21" width="2" height="1" fill="#2b2622"/><rect x="14" y="21" width="1" height="1" fill="#f6e7c1"/><rect x="15" y="21" width="1" height="1" fill="#8f979e"/><rect x="16" y="21" width="5" height="1" fill="#b9c0c6"/><rect x="4" y="22" width="7" height="1" fill="#b9c0c6"/><rect x="11" y="22" width="1" height="1" fill="#8f979e"/><rect x="12" y="22" width="2" height="1" fill="#2b2622"/><rect x="14" y="22" width="1" height="1" fill="#8f979e"/><rect x="15" y="22" width="7" height="1" fill="#b9c0c6"/><rect x="4" y="23" width="3" height="1" fill="#8f979e"/><rect x="7" y="23" width="2" height="1" fill="#f1c7a0"/><rect x="9" y="23" width="8" height="1" fill="#8f979e"/><rect x="17" y="23" width="2" height="1" fill="#f1c7a0"/><rect x="19" y="23" width="3" height="1" fill="#8f979e"/><rect x="4" y="24" width="18" height="1" fill="#b9c0c6"/><rect x="4" y="25" width="18" height="1" fill="#b9c0c6"/></svg><span class="pl" aria-hidden="true">P2</span></span>
+            <div class="crew-txt"><p class="role">導演</p><p class="nm">洪爾佑</p><p class="org">好男孩影像製作公司<br>創辦人／導演</p></div>
+          </li>
+          <li class="crew-item">
+            <span class="av"><svg viewBox="0 0 26 26" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="企劃 郭琇真 像素頭像"><rect width="26" height="26" fill="#eab33f"/><rect x="1" y="2" width="1" height="1" fill="#f6e7c1" opacity=".7"/><rect x="23" y="5" width="1" height="1" fill="#f6e7c1" opacity=".7"/><rect x="22" y="3" width="1" height="1" fill="#f6e7c1" opacity=".5"/><rect x="8" y="5" width="9" height="1" fill="#2b2622"/><rect x="6" y="6" width="13" height="1" fill="#2b2622"/><rect x="5" y="7" width="15" height="1" fill="#2b2622"/><rect x="5" y="8" width="16" height="1" fill="#2b2622"/><rect x="5" y="9" width="3" height="1" fill="#2b2622"/><rect x="8" y="9" width="3" height="1" fill="#f1c7a0"/><rect x="11" y="9" width="10" height="1" fill="#2b2622"/><rect x="4" y="10" width="3" height="1" fill="#2b2622"/><rect x="7" y="10" width="8" height="1" fill="#f1c7a0"/><rect x="15" y="10" width="7" height="1" fill="#2b2622"/><rect x="4" y="11" width="3" height="1" fill="#2b2622"/><rect x="7" y="11" width="1" height="1" fill="#f1c7a0"/><rect x="8" y="11" width="4" height="1" fill="#2b2622"/><rect x="12" y="11" width="2" height="1" fill="#f1c7a0"/><rect x="14" y="11" width="4" height="1" fill="#2b2622"/><rect x="18" y="11" width="1" height="1" fill="#f1c7a0"/><rect x="19" y="11" width="3" height="1" fill="#2b2622"/><rect x="4" y="12" width="3" height="1" fill="#2b2622"/><rect x="7" y="12" width="1" height="1" fill="#f1c7a0"/><rect x="8" y="12" width="1" height="1" fill="#2b2622"/><rect x="9" y="12" width="1" height="1" fill="#f1c7a0"/><rect x="10" y="12" width="1" height="1" fill="#2b2622"/><rect x="11" y="12" width="1" height="1" fill="#f1c7a0"/><rect x="12" y="12" width="2" height="1" fill="#2b2622"/><rect x="14" y="12" width="1" height="1" fill="#f1c7a0"/><rect x="15" y="12" width="1" height="1" fill="#2b2622"/><rect x="16" y="12" width="1" height="1" fill="#f1c7a0"/><rect x="17" y="12" width="1" height="1" fill="#2b2622"/><rect x="18" y="12" width="1" height="1" fill="#f1c7a0"/><rect x="19" y="12" width="3" height="1" fill="#2b2622"/><rect x="4" y="13" width="3" height="1" fill="#2b2622"/><rect x="7" y="13" width="2" height="1" fill="#f1c7a0"/><rect x="9" y="13" width="2" height="1" fill="#2b2622"/><rect x="11" y="13" width="4" height="1" fill="#f1c7a0"/><rect x="15" y="13" width="2" height="1" fill="#2b2622"/><rect x="17" y="13" width="2" height="1" fill="#f1c7a0"/><rect x="19" y="13" width="3" height="1" fill="#2b2622"/><rect x="4" y="14" width="3" height="1" fill="#2b2622"/><rect x="7" y="14" width="5" height="1" fill="#f1c7a0"/><rect x="12" y="14" width="2" height="1" fill="#d9a37e"/><rect x="14" y="14" width="5" height="1" fill="#f1c7a0"/><rect x="19" y="14" width="3" height="1" fill="#2b2622"/><rect x="4" y="15" width="3" height="1" fill="#2b2622"/><rect x="7" y="15" width="1" height="1" fill="#f1c7a0"/><rect x="8" y="15" width="1" height="1" fill="#e98a4f"/><rect x="9" y="15" width="2" height="1" fill="#f1c7a0"/><rect x="11" y="15" width="1" height="1" fill="#8f3a26"/><rect x="12" y="15" width="2" height="1" fill="#f1c7a0"/><rect x="14" y="15" width="1" height="1" fill="#8f3a26"/><rect x="15" y="15" width="2" height="1" fill="#f1c7a0"/><rect x="17" y="15" width="1" height="1" fill="#e98a4f"/><rect x="18" y="15" width="1" height="1" fill="#f1c7a0"/><rect x="19" y="15" width="3" height="1" fill="#2b2622"/><rect x="4" y="16" width="3" height="1" fill="#2b2622"/><rect x="7" y="16" width="5" height="1" fill="#f1c7a0"/><rect x="12" y="16" width="2" height="1" fill="#8f3a26"/><rect x="14" y="16" width="5" height="1" fill="#f1c7a0"/><rect x="19" y="16" width="3" height="1" fill="#2b2622"/><rect x="4" y="17" width="4" height="1" fill="#2b2622"/><rect x="8" y="17" width="10" height="1" fill="#f1c7a0"/><rect x="18" y="17" width="4" height="1" fill="#2b2622"/><rect x="4" y="18" width="5" height="1" fill="#2b2622"/><rect x="9" y="18" width="1" height="1" fill="#d9a37e"/><rect x="10" y="18" width="6" height="1" fill="#f1c7a0"/><rect x="16" y="18" width="1" height="1" fill="#d9a37e"/><rect x="17" y="18" width="5" height="1" fill="#2b2622"/><rect x="4" y="19" width="5" height="1" fill="#2b2622"/><rect x="9" y="19" width="8" height="1" fill="#ece2cf"/><rect x="17" y="19" width="5" height="1" fill="#2b2622"/><rect x="5" y="20" width="2" height="1" fill="#2f5a4f"/><rect x="7" y="20" width="12" height="1" fill="#ece2cf"/><rect x="19" y="20" width="2" height="1" fill="#2f5a4f"/><rect x="4" y="21" width="3" height="1" fill="#2f5a4f"/><rect x="7" y="21" width="12" height="1" fill="#ece2cf"/><rect x="19" y="21" width="3" height="1" fill="#2f5a4f"/><rect x="4" y="22" width="5" height="1" fill="#2f5a4f"/><rect x="9" y="22" width="4" height="1" fill="#ece2cf"/><rect x="13" y="22" width="2" height="1" fill="#c9bba0"/><rect x="15" y="22" width="2" height="1" fill="#ece2cf"/><rect x="17" y="22" width="5" height="1" fill="#2f5a4f"/><rect x="3" y="23" width="8" height="1" fill="#2f5a4f"/><rect x="11" y="23" width="2" height="1" fill="#ece2cf"/><rect x="13" y="23" width="1" height="1" fill="#c9bba0"/><rect x="14" y="23" width="9" height="1" fill="#2f5a4f"/><rect x="3" y="24" width="8" height="1" fill="#2f5a4f"/><rect x="11" y="24" width="3" height="1" fill="#ece2cf"/><rect x="14" y="24" width="9" height="1" fill="#2f5a4f"/><rect x="3" y="25" width="8" height="1" fill="#2f5a4f"/><rect x="11" y="25" width="1" height="1" fill="#c9bba0"/><rect x="12" y="25" width="2" height="1" fill="#ece2cf"/><rect x="14" y="25" width="9" height="1" fill="#2f5a4f"/></svg><span class="pl" aria-hidden="true">P3</span></span>
+            <div class="crew-txt"><p class="role">企劃</p><p class="nm">郭琇真</p><p class="org">好男孩影像製作公司<br>製作人</p></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <div class="contact-box">
+        <div>
+          <h2 id="contact-title">合作與邀約</h2>
+        </div>
+        <div class="mail">
+          <span>Email</span>
+          <a class="addr" id="mail" href="mailto:annwen0406@gmail.com">annwen0406@gmail.com</a>
+          <div class="row">
+            <a href="mailto:annwen0406@gmail.com?subject=%E6%96%87%E5%8C%96QQ%20%E5%90%88%E4%BD%9C%E9%82%80%E7%B4%84">寫信給我們</a>
+            <button id="copy" type="button">複製信箱</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="pixel">PODCAST CULTURE QQ · SEASON 1 · 2026</span>
+  </div>
+</footer>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="照片檢視">
+  <button class="lb-close" id="lbClose" type="button" aria-label="關閉">✕</button>
+  <button class="lb-prev" id="lbPrev" type="button" aria-label="上一張">◀</button>
+  <figure class="lb-fig"><div class="lb-img" id="lbImg"></div><figcaption><span id="lbCap"></span><span class="pixel" id="lbCount"></span></figcaption></figure>
+  <button class="lb-next" id="lbNext" type="button" aria-label="下一張">▶</button>
+</div>
+
+<script>
+(function(){
+  var YT_ID = 'RHU4m0uwocE';
+  var YT = 'https://youtu.be/' + YT_ID;
+  /* 正式上線時填入網址（例如 'https://cultureqq.tw'），分享連結會變成「網址/ep01」；空白時先用本頁網址 #ep01 示範 */
+  var SITE = '';
+  function shareUrl(n){ return SITE ? SITE.replace(/\/$/,'')+'/ep'+pad(n) : location.href.split('#')[0]+'#ep'+pad(n); }
+  var THEMES = [
+    {shell:'#3f6447',base:'#2f4a35',title:'#cf5f3a',fg:'#f6e7c1',band:'#eab33f',glow:'#8a5a2b'},
+    {shell:'#8f3a26',base:'#6e2a1b',title:'#3f6447',fg:'#f6e7c1',band:'#f1a98a',glow:'#6b4a6e'},
+    {shell:'#2f5a4f',base:'#22443b',title:'#eab33f',fg:'#2b2622',band:'#e98a4f',glow:'#3f6a6a'},
+    {shell:'#5a4632',base:'#463626',title:'#8fa57f',fg:'#2b2622',band:'#e98a4f',glow:'#8a3a2b'}
+  ];
+  var TODO_CH = [['[00:00]','[章節標題]'],['[00:00]','[章節標題]'],['[00:00]','[章節標題]'],['[00:00]','[章節標題]']];
+  var GUESTS = [
+    {name:'陳柏良',role:'[職稱]',site:'阿里山',bio:'[來賓簡介：兩三句說明來賓的專業背景，以及與阿里山的淵源。]',
+      eps:[
+        {chapters:[['00:00','開場與來賓介紹'],['01:25','從建築系到文化資產：鹿港老街的起點'],['05:39','什麼是「測繪」？當建築物的醫生'],['10:00','阿里山是一座知識的寶庫'],['13:12','什麼是文化資產「普查」？'],['16:19','研究學者的推薦：鹿麻產、十字路車站與鄒族部落']]},
+        {chapters:TODO_CH}
+      ]},
+    {name:'Jimmy',role:'[職稱]',site:'[場域名稱]',bio:'[來賓簡介：兩三句說明來賓的專業背景，以及與場域的淵源。]',eps:[{chapters:TODO_CH},{chapters:TODO_CH}]},
+    {name:'謝名棻',role:'[職稱]',site:'[場域名稱]',bio:'[來賓簡介：兩三句說明來賓的專業背景，以及與場域的淵源。]',eps:[{chapters:TODO_CH},{chapters:TODO_CH}]},
+    {name:'黃家俊',role:'[職稱]',site:'[場域名稱]',bio:'[來賓簡介：兩三句說明來賓的專業背景，以及與場域的淵源。]',eps:[{chapters:TODO_CH},{chapters:TODO_CH}]}
+  ];
+  /* 陳柏良提供的宣傳照片 */
+  GUESTS[0].eps[0].photos=[
+    {src:'img/ep01-1.jpg',cap:'林業鐵路橋梁調查（19K+100m）',alt:'阿里山林業鐵路橋梁，調查人員手持白板標示位置'},
+    {src:'img/ep01-2.jpg',cap:'現場測繪紀錄',alt:'調查人員在石壁下方以相機進行測繪紀錄'},
+    {src:'img/ep01-3.jpg',cap:'神木車站周邊文化資產分布圖',alt:'阿里山神木車站、沼平車站周邊文化資產位置地圖',fit:'contain'},
+    {src:'img/ep02-1.jpg',cap:'阿里山山景與雲海',alt:'清晨的阿里山山脈與山谷雲霧'}
+  ];
+  GUESTS[0].eps[1].photos=[
+    {src:'img/ep02-2.jpg',cap:'阿里山林業鐵路 DL-45 機車',alt:'紅色 DL-45 柴油機車牽引列車行駛'},
+    {src:'img/ep02-3.jpg',cap:'林間的舊木橋遺構',alt:'森林中長滿青苔的舊木造橋梁'},
+    {src:'img/ep01-4.jpg',cap:'阿里山博物館',alt:'森林中的木造阿里山博物館'},
+    {src:'img/ep02-4.jpg',cap:'阿里山博物館',alt:'阿里山博物館木造門廊'}
+  ];
+  /* Jimmy 提供的照片（EP03 上集） */
+  GUESTS[1].eps[0].photos=[
+    {src:'img/ep03-1.jpg',cap:'水源禁地入口',alt:'林間石板步道盡頭的鐵門，掛著「水源禁地 請勿進入」告示牌'},
+    {src:'img/ep03-2.jpg',cap:'「地靈釀出甘漿」題字',alt:'老建築山牆上的石刻題字「地靈釀出甘漿」'},
+    {src:'img/ep03-3.jpg',cap:'混凝土水塔',alt:'樹林後方高聳的八角形混凝土水塔'}
+  ];
+  /* Jimmy 提供的照片（EP04 下集） */
+  GUESTS[1].eps[1].photos=[
+    {src:'img/ep04-1.jpg',cap:'修復工地現場的 Jimmy',alt:'戴安全帽、穿反光背心的 Jimmy 站在鷹架通道中',pos:'50% 30%'},
+    {src:'img/ep04-2.jpg',cap:'「嚴禁煙火」舊標語',alt:'建築外牆上保留的紅字「嚴禁煙火」舊標語'},
+    {src:'img/ep04-3.jpg',cap:'混凝土牆上的圓形標記',alt:'清水混凝土牆面上的白色圓形標記與施工記號'}
+  ];
+  /* 謝名棻提供的照片（EP05 上集） */
+  GUESTS[2].eps[0].photos=[
+    {src:'img/ep05-1.jpg',cap:'傳統地下屋聚落',alt:'海邊聚落中以石砌半穴居、黑色屋頂的傳統地下屋'},
+    {src:'img/ep05-2.jpg',cap:'田野中的甜柿',alt:'戴眼鏡的女子手拿切好的柿子微笑',pos:'50% 25%'},
+    {src:'img/ep05-3.jpg',cap:'林間田野調查',alt:'調查團隊在陽光穿透的森林中勘查'},
+    {src:'img/ep05-4.jpg',cap:'與耆老田野訪談',alt:'年輕研究者在戶外茶桌旁訪談長輩'}
+  ];
+  /* 謝名棻提供的照片（EP06 下集） */
+  GUESTS[2].eps[1].photos=[
+    {src:'img/ep06-1.jpg',cap:'什麼是 GIS？',alt:'簡報頁說明 GIS 的構成要件：圖徵與圖層、屬性表、視覺化與空間分析'},
+    {src:'img/ep06-2.jpg',cap:'GIS 歷史圖層套疊',alt:'GIS 軟體畫面，左側列出多個年代的歷史地形圖圖層，右側為正射影像'},
+    {src:'img/ep06-3.jpg',cap:'去日本金澤的水路踏查',alt:'研究者在日本金澤沿著櫻花盛開的小水路步行踏查'},
+    {src:'img/ep06-4.jpg',cap:'田野調查的夜晚，依舊熱烈討論中',alt:'研究團隊晚上在木屋客廳圍坐討論調查資料'}
+  ];
+  var PH_BG=['linear-gradient(170deg,#a9c6cf,#d8cfae 55%,#8fa57f)','#eab33f','#8fa57f','#e98a4f'];
+  var DEMO_COUNT=[4,3,2,4,3,2,4,3];
+  GUESTS.forEach(function(g,i){ g.eps.forEach(function(ep,j){
+    if(ep.photos) return;
+    var n=DEMO_COUNT[i*2+j], arr=[];
+    for(var k=0;k<n;k++) arr.push({label:'[照片 '+(k+1)+']', cap:k===0?'[圖說]':''});
+    ep.photos=arr;
+  }); });
+  function pad(n){return (n<10?'0':'')+n}
+  /* Threads 預填文案（之後可在這裡修改） */
+  function threadsText(i,n){ return '我在聽《文化ＱＱ》EP'+pad(n)+' '+GUESTS[i].site+'・'+(n%2?'上集':'下集')+'，用不一樣的方式認識文化。'; }
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function secs(t){ var m=/^(\d+):(\d{2})$/.exec(t); return m? (+m[1])*60+(+m[2]) : null; }
+  var playIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg>';
+
+  var host=document.getElementById('tapes');
+  GUESTS.forEach(function(g,i){
+    var t=THEMES[i];
+    var art=document.createElement('article');
+    art.className='tape'; art.id='tape'+(i+1);
+    art.style.cssText='--shell:'+t.shell+';--base:'+t.base+';--title:'+t.title+';--fg:'+t.fg+';--band:'+t.band+';--glow:'+t.glow;
+    art.setAttribute('aria-label','卡帶 '+pad(i+1)+'：'+g.name);
+    art.innerHTML=
+      '<div class="label">'+
+        '<div class="label-top">'+
+          '<div class="no">TAPE '+pad(i+1)+'</div>'+
+          '<div class="who"><h3>'+esc(g.site)+'</h3><span>來賓｜'+esc(g.name)+'</span><span class="tag2">本卷 2 集</span></div>'+
+        '</div>'+
+        '<div class="sides" role="tablist" aria-label="選擇集數">'+
+          '<button class="side-btn" role="tab" type="button" data-side="0"><span class="sd">A 面</span><span class="sl">EP'+pad(i*2+1)+' 上集</span><span class="hint" aria-hidden="true">▶</span></button>'+
+          '<button class="side-btn" role="tab" type="button" data-side="1"><span class="sd">B 面</span><span class="sl">EP'+pad(i*2+2)+' 下集</span><span class="hint" aria-hidden="true">▶</span></button>'+
+        '</div>'+
+        '<div class="label-body">'+
+          '<div class="screen">'+
+            '<div class="osd top"><span>▶ PLAY</span><span class="osd-ep"></span></div>'+
+            '<div class="screen-mid"><span class="ep"></span><a class="play-link" href="'+YT+'" target="_blank" rel="noopener">'+playIcon+'播放本集</a></div>'+
+            '<div class="osd bottom"><span class="osd-side"></span><span class="date">\'26 11 20</span></div>'+
+          '</div>'+
+          '<div class="info">'+
+            '<p class="kicker"></p>'+
+            '<h4></h4>'+
+            '<p class="desc"></p>'+
+            '<div class="meta"><span>約 20 分鐘</span></div>'+
+            '<a class="btn yt" href="'+YT+'" target="_blank" rel="noopener">在 YouTube 觀看 ↗</a>'+
+            '<div class="share" role="group" aria-label="分享本集"><span class="share-lb">分享本集</span>'+
+              '<a class="sh sh-fb" target="_blank" rel="noopener">Facebook</a>'+
+              '<a class="sh sh-th" target="_blank" rel="noopener">Threads</a>'+
+              '<button class="sh sh-ig" type="button">Instagram</button>'+
+            '</div>'+
+            '<p class="share-tip" aria-live="polite" hidden></p>'+
+            '<div class="guest-line"><p class="gk">本集來賓</p><p class="gn">'+esc(g.name)+' <span>'+esc(g.role)+'</span></p><p class="gb">'+esc(g.bio)+'</p></div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="extras">'+
+          '<div class="tracks"><div class="extra-head"><h5>TRACK LIST・本集章節</h5><span>點時間跳到該段</span></div><ol></ol><button class="flip" type="button"></button></div>'+
+          '<div class="photos"><div class="extra-head"><h5>現場花絮</h5><span>點照片可放大</span></div>'+
+            '<div class="mosaic"></div><p class="count" aria-hidden="true"></p></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="tape-foot" aria-hidden="true"><div><i></i><i></i></div></div>';
+    host.appendChild(art);
+    art.querySelectorAll('.side-btn').forEach(function(b){
+      b.addEventListener('click',function(){ setSide(i,+b.dataset.side,true); try{history.replaceState(null,'','#ep'+pad(i*2+1+(+b.dataset.side)))}catch(e){} });
+    });
+    art.querySelector('.sh-ig').addEventListener('click',function(){
+      var n=i*2+1+(+art.dataset.side||0), url=shareUrl(n), tip=art.querySelector('.share-tip');
+      var data={title:'文化ＱＱ EP'+pad(n)+'｜'+GUESTS[i].site+'・'+(n%2?'上集':'下集'), text:threadsText(i,n), url:url};
+      function say(t){ tip.textContent=t; tip.hidden=false; clearTimeout(tip._t); tip._t=setTimeout(function(){tip.hidden=true},4000); }
+      function copy(){
+        if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(function(){ say('已複製本集連結，可貼到 IG 限時動態的「連結貼紙」。'); },function(){ say('本集連結：'+url); }); }
+        else say('本集連結：'+url);
+      }
+      var touch=window.matchMedia('(pointer: coarse)').matches;
+      if(touch&&navigator.share){ navigator.share(data).catch(function(e){ if(!e||e.name!=='AbortError') copy(); }); } else copy();
+    });
+    art.querySelector('.flip').addEventListener('click',function(){
+      var to=art.dataset.side==='1'?0:1;
+      setSide(i,to,true);
+      try{history.replaceState(null,'','#ep'+pad(i*2+1+to))}catch(e){}
+      var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      art.querySelector('.sides').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+    });
+    setSide(i,0,false);
+  });
+
+  function setSide(i,side,sound){
+    var art=document.getElementById('tape'+(i+1)), g=GUESTS[i], n=i*2+1+side;
+    art.querySelectorAll('.side-btn').forEach(function(b){ b.setAttribute('aria-selected', String(+b.dataset.side===side)); });
+    art.dataset.side=String(side);
+    art.querySelector('.flip').textContent = side ? '回到 A 面　◀ EP'+pad(n-1)+' 上集' : '聽完上集？翻到 B 面　▶ EP'+pad(n+1)+' 下集';
+    art.querySelector('.ep').textContent='EP'+pad(n);
+    art.querySelector('.osd-ep').textContent='SP  EP'+pad(n);
+    art.querySelector('.osd-side').textContent='SIDE '+(side?'B':'A');
+    art.querySelector('.kicker').textContent='EP'+pad(n)+' · SIDE '+(side?'B':'A');
+    art.querySelector('h4').textContent=g.site+'・'+(side?'下集':'上集');
+    art.querySelector('.desc').textContent='[本集簡介：兩三句說明本集聊了什麼、聽完會帶走什麼。]';
+    art.querySelector('.play-link').setAttribute('aria-label','在 YouTube 播放 EP'+pad(n));
+    var su=encodeURIComponent(shareUrl(n));
+    art.querySelector('.sh-fb').href='https://www.facebook.com/sharer/sharer.php?u='+su;
+    art.querySelector('.sh-fb').setAttribute('aria-label','分享 EP'+pad(n)+' 到 Facebook');
+    art.querySelector('.sh-th').href='https://www.threads.com/intent/post?text='+encodeURIComponent(threadsText(i,n))+'&url='+su+'&tag='+encodeURIComponent('文化QQ');
+    art.querySelector('.sh-th').setAttribute('aria-label','分享 EP'+pad(n)+' 到 Threads');
+    art.querySelector('.sh-ig').setAttribute('aria-label','分享 EP'+pad(n)+' 到 Instagram（手機開啟分享選單，電腦複製連結）');
+    art.querySelector('.share-tip').hidden=true;
+    var ol=art.querySelector('.tracks ol'), html='';
+    g.eps[side].chapters.forEach(function(c){
+      var s=secs(c[0]);
+      if(s===null){ html+='<li><div class="trk todo"><time>'+esc(c[0].replace(/[\[\]]/g,''))+'</time><span class="tt">'+esc(c[1])+'</span></div></li>'; }
+      else { html+='<li><a class="trk" href="'+YT+'?t='+s+'" target="_blank" rel="noopener"><time>'+esc(c[0])+'</time><span class="tt">'+esc(c[1])+'</span><span class="go">▶</span></a></li>'; }
+    });
+    ol.innerHTML=html;
+    renderPhotos(art, g.eps[side].photos);
+    if(sound) clack(true);
+  }
+
+  /* ---------- photos ---------- */
+  function shotInner(p,k){
+    var inner = p.src ? '<img src="'+esc(p.src)+'" alt="'+esc(p.alt||p.cap||'現場照片')+'" loading="lazy"'+(p.fit==='contain'?' class="fit-contain"':'')+(p.pos?' style="object-position:'+esc(p.pos)+'"':'')+'>'
+                      : '<span class="ph" style="background:'+PH_BG[k%PH_BG.length]+'">'+esc(p.label)+'</span>';
+    return inner;
+  }
+  function renderPhotos(art,list){
+    var m=art.querySelector('.mosaic'), c=art.querySelector('.count');
+    m.className='mosaic n'+Math.min(4,Math.max(2,list.length));
+    m.innerHTML=list.map(function(p,k){
+      return '<button class="shot" type="button" data-k="'+k+'" aria-label="放大第 '+(k+1)+' 張照片'+(p.cap?'：'+esc(p.cap):'')+'">'+shotInner(p,k)+(p.cap?'<span class="cap">'+esc(p.cap)+'</span>':'')+'</button>';
+    }).join('');
+    m.scrollLeft=0;
+    c.textContent='1／'+list.length;
+    m.querySelectorAll('.shot').forEach(function(b){ b.addEventListener('click',function(){ openLB(list,+b.dataset.k,b); }); });
+    m.onscroll=function(){
+      var first=m.querySelector('.shot'); if(!first) return;
+      var step=first.offsetWidth+10, k=Math.round(m.scrollLeft/step);
+      c.textContent=Math.min(list.length,k+1)+'／'+list.length;
+    };
+  }
+  var lb=document.getElementById('lb'), lbList=[], lbK=0, lbFrom=null;
+  function drawLB(){
+    var p=lbList[lbK];
+    document.getElementById('lbImg').innerHTML=shotInner(p,lbK);
+    document.getElementById('lbCap').textContent=p.cap||'';
+    document.getElementById('lbCount').textContent=(lbK+1)+'／'+lbList.length;
+    document.getElementById('lbPrev').hidden=lbList.length<2;
+    document.getElementById('lbNext').hidden=lbList.length<2;
+  }
+  function openLB(list,k,from){ lbList=list; lbK=k; lbFrom=from; drawLB(); lb.hidden=false; document.body.style.overflow='hidden'; document.getElementById('lbClose').focus(); }
+  function closeLB(){ lb.hidden=true; document.body.style.overflow=''; if(lbFrom) lbFrom.focus(); }
+  function stepLB(d){ lbK=(lbK+d+lbList.length)%lbList.length; drawLB(); }
+  document.getElementById('lbClose').addEventListener('click',closeLB);
+  document.getElementById('lbPrev').addEventListener('click',function(){stepLB(-1)});
+  document.getElementById('lbNext').addEventListener('click',function(){stepLB(1)});
+  lb.addEventListener('click',function(e){ if(e.target===lb) closeLB(); });
+  document.addEventListener('keydown',function(e){
+    if(lb.hidden) return;
+    if(e.key==='Escape') closeLB(); else if(e.key==='ArrowLeft') stepLB(-1); else if(e.key==='ArrowRight') stepLB(1);
+  });
+
+  /* ---------- quick links in the opener ---------- */
+  var epl=document.getElementById('eplist');
+  GUESTS.forEach(function(g,i){ [0,1].forEach(function(side){
+    var n=i*2+1+side, a=document.createElement('a');
+    a.className='epl'; a.href='#ep'+pad(n);
+    a.innerHTML='<b style="background:'+THEMES[i].title+';color:'+THEMES[i].fg+'">EP'+pad(n)+'</b><span>'+esc(g.site)+'・'+(side?'下集':'上集')+'</span>';
+    a.addEventListener('click',function(e){ e.preventDefault(); try{history.replaceState(null,'','#ep'+pad(n))}catch(x){} route(); clack(false); });
+    epl.appendChild(a);
+  }); });
+
+  /* ---------- deep links #ep01–#ep08 ---------- */
+  function route(){
+    var m=/^#ep0?([1-8])$/i.exec(location.hash||''); if(!m) return;
+    var n=+m[1]-1, i=Math.floor(n/2);
+    setSide(i,n%2,false);
+    var el=document.getElementById('tape'+(i+1)); if(el) el.scrollIntoView({block:'start'});
+  }
+  window.addEventListener('hashchange',route);
+  route();
+
+  /* ---------- sound: synthesized cassette key "ka-chak" ---------- */
+  var ctx=null, muted=false;
+  try{ muted=localStorage.getItem('cqq-muted')==='1'; }catch(e){}
+  var muteBtn=document.getElementById('mute');
+  function showMute(){ muteBtn.setAttribute('aria-pressed',String(muted)); muteBtn.textContent=muted?'音效 關':'音效 開'; }
+  showMute();
+  muteBtn.addEventListener('click',function(){ muted=!muted; try{localStorage.setItem('cqq-muted',muted?'1':'0')}catch(e){} showMute(); if(!muted) clack(false); });
+
+  function ac(){ if(!ctx){ var C=window.AudioContext||window.webkitAudioContext; if(!C) return null; ctx=new C(); } if(ctx.state==='suspended') ctx.resume(); return ctx; }
+  function noise(c,t,freq,gain,dur){
+    var len=Math.max(1,Math.floor(c.sampleRate*dur)), buf=c.createBuffer(1,len,c.sampleRate), d=buf.getChannelData(0);
+    for(var k=0;k<len;k++){ d[k]=(Math.random()*2-1)*Math.pow(1-k/len,5); }
+    var s=c.createBufferSource(); s.buffer=buf;
+    var f=c.createBiquadFilter(); f.type='bandpass'; f.frequency.value=freq; f.Q.value=1.8;
+    var g=c.createGain(); g.gain.value=gain;
+    s.connect(f); f.connect(g); g.connect(c.destination); s.start(t);
+  }
+  function thump(c,t){
+    var o=c.createOscillator(), g=c.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(150,t); o.frequency.exponentialRampToValueAtTime(55,t+0.09);
+    g.gain.setValueAtTime(0.35,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.1);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+0.12);
+  }
+  function clack(heavy){
+    if(muted) return; var c=ac(); if(!c) return; var t=c.currentTime+0.01;
+    noise(c,t,3400,0.5,0.025);
+    if(heavy){ noise(c,t+0.1,1400,0.9,0.05); thump(c,t+0.1); }
+  }
+
+  /* ---------- deck keys ---------- */
+  var deck=document.getElementById('deck'), status=document.getElementById('status'), counter=document.getElementById('counter'), timer=null, count=0;
+  function press(id){ var b=document.getElementById(id); b.classList.add('down'); setTimeout(function(){b.classList.remove('down')},140); }
+  document.getElementById('k-play').addEventListener('click',function(){
+    press('k-play'); clack(true);
+    deck.classList.add('playing'); status.textContent='PLAYING · SIDE A';
+    clearInterval(timer); timer=setInterval(function(){ count=(count+1)%1000; counter.textContent=('00'+count).slice(-3); },180);
+    setTimeout(function(){ var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches; document.getElementById('episodes').scrollIntoView({behavior:reduce?'auto':'smooth'}); },900);
+  });
+  document.getElementById('k-stop').addEventListener('click',function(){
+    press('k-stop'); clack(false); deck.classList.remove('playing'); clearInterval(timer); status.textContent='STOP';
+  });
+
+  /* ---------- copy mail ---------- */
+  document.getElementById('copy').addEventListener('click',function(){
+    var txt='annwen0406@gmail.com', btn=this;
+    function done(){ btn.textContent='已複製'; setTimeout(function(){btn.textContent='複製信箱'},1600); }
+    function sel(){ var r=document.createRange(); r.selectNodeContents(document.getElementById('mail')); var s=getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent='已選取，請按複製'; }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done,sel); } else sel();
+  });
+})();
+</script>
+</body>
+</html>
