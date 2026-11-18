@@ -99,7 +99,7 @@ h1,h2,h3,h4,h5{text-wrap:balance;margin:0}
 .side-btn:hover{background:var(--cream)}
 .side-btn[aria-selected="true"],.side-btn[aria-selected="true"]:hover{background:var(--ink);color:var(--cream);cursor:default}
 .side-btn[aria-selected="true"] .hint{display:none}
-.flip{margin-top:14px;width:100%;min-height:52px;border:2px dashed var(--ink);background:transparent;border-radius:8px;font-family:var(--body);font-weight:700;font-size:15px;color:var(--ink);cursor:pointer;padding:6px 12px}
+.flip{word-break:keep-all;margin-top:14px;width:100%;min-height:52px;border:2px dashed var(--ink);background:transparent;border-radius:8px;font-family:var(--body);font-weight:700;font-size:15px;color:var(--ink);cursor:pointer;padding:6px 12px}
 .flip:hover{background:var(--cream)}
 .label-body{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
 .screen{position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,var(--glow) 0%,#3a2a1c 62%,#16110c 100%);color:#fff}
@@ -112,10 +112,16 @@ h1,h2,h3,h4,h5{text-wrap:balance;margin:0}
 .screen-mid .ep{font-family:var(--pixel);font-size:clamp(40px,7vw,72px);line-height:1;color:var(--cream);text-shadow:-2px 0 rgba(255,50,80,.5),2px 0 rgba(50,210,255,.45)}
 .play-link{display:inline-flex;align-items:center;gap:10px;background:var(--cream);color:var(--ink);text-decoration:none;font-family:var(--pixel);font-size:16px;padding:10px 18px;border-radius:999px;min-height:48px}
 .play-link:hover{background:var(--mustard)}
+.soon-tag{font-family:var(--pixel);font-size:clamp(18px,3vw,28px);letter-spacing:.12em;color:#ff9a3c;text-shadow:0 0 8px rgba(255,140,40,.7);animation:blink 1.2s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
+@media (prefers-reduced-motion:reduce){.soon-tag{animation:none}}
+.is-soon .extras{grid-template-columns:minmax(0,1fr)}
+.epl-soon{opacity:.75;border-style:dashed}
+.epl-soon span::after{content:'SOON';margin-left:6px;font-family:var(--pixel);font-weight:400;font-size:11px;color:var(--rust)}
 .play-link svg{width:18px;height:18px}
 .info{padding:22px 22px 20px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .info .kicker{font-family:var(--pixel);font-size:13px;color:var(--rust);letter-spacing:.1em;margin:0}
-.info h4{font-family:var(--hand);font-size:26px;line-height:1.3}
+.info h4{word-break:keep-all;line-break:strict;font-family:var(--hand);font-size:26px;line-height:1.3}
 .info p{margin:0;color:var(--ink-2)}
 .meta{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--pixel);font-size:13px}
 .meta span{background:var(--cream);border:1px solid var(--line);border-radius:4px;padding:2px 8px}
@@ -237,6 +243,7 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
   .av{width:76px;height:76px}
   .eplist{grid-template-rows:none;grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr))}
   .epl span{padding:0 8px;font-size:13px}
+  .epl-soon span::after{display:none}
   .share-lb{width:100%}
   .sh{flex:1 1 0;padding:0 8px}
   .side-btn{flex-direction:column;gap:0;font-size:15px}
@@ -337,9 +344,9 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
         </div>
         <div class="mail">
           <span>Email</span>
-          <a class="addr" id="mail" href="mailto:annwen0406@gmail.com">annwen0406@gmail.com</a>
+          <a class="addr" id="mail" href="mailto:cultureqq.podcast@gmail.com">cultureqq.podcast@gmail.com</a>
           <div class="row">
-            <a href="mailto:annwen0406@gmail.com?subject=%E6%96%87%E5%8C%96QQ%20%E5%90%88%E4%BD%9C%E9%82%80%E7%B4%84">寫信給我們</a>
+            <a href="mailto:cultureqq.podcast@gmail.com?subject=%E6%96%87%E5%8C%96QQ%20%E5%90%88%E4%BD%9C%E9%82%80%E7%B4%84">寫信給我們</a>
             <button id="copy" type="button">複製信箱</button>
           </div>
         </div>
@@ -385,6 +392,42 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
     {name:'謝名棻',role:'[職稱]',site:'[場域名稱]',bio:'[來賓簡介：兩三句說明來賓的專業背景，以及與場域的淵源。]',eps:[{chapters:TODO_CH},{chapters:TODO_CH}]},
     {name:'黃家俊',role:'[職稱]',site:'[場域名稱]',bio:'[來賓簡介：兩三句說明來賓的專業背景，以及與場域的淵源。]',eps:[{chapters:TODO_CH},{chapters:TODO_CH}]}
   ];
+  /* 來賓與單集資料 */
+  (function(){
+    var info=[
+      {name:'陳柏良',role:'國立臺北藝術大學文化資產與藝術創新博士班 博士生',eps:[
+        {title:'建築物的醫生：從老屋測繪走進阿里山',short:'建築物的醫生',desc:'從建築系到深耕研究阿里山14年（訪談口誤為18年），柏良分享文資工作者如何當「建築物的醫生」。聽完本集，你將理解測繪與普查的意義，並發現日出雲海之外，鹿麻產車站、十字路車站與鄒族部落的在地魅力。'},
+        {title:'讀懂阿里山的文化景觀：山林、鐵道與製材所',short:'讀懂阿里山的文化景觀',desc:'什麼是文化景觀？柏良從山林、鐵道到製材廠，串起阿里山的產業系統。聽完本集，你將學會用「自然與人文共生」的眼光看文化資產，並理解調查研究的重要性，能為文化資產的未來，帶來更多元的思考與選擇。'}]},
+      {name:'Jimmy 吳沛穎',role:'建築師事務所副理',eps:[
+        {title:'藏在路名裡的水道歷史：喝過臺北「軟到爆炸」的水？',short:'藏在路名裡的水道歷史',desc:'你家附近有水源路嗎？本集從自來水的前身「水道」談起，聊水塔、水源地與南北水質差異，再延伸到老建築的再利用。發現從路名、水垢這些日常線索，看見身邊的文化資產。'},
+        {title:'古蹟修復的偵探日常：留下牆上的「嚴禁煙火」',short:'古蹟修復的偵探日常',desc:'古蹟修復不只是照圖施工，每一面牆都要在現場逐一確認。本集跟著 Jimmy 走進基隆西二西三倉庫，用工業設計的眼光讀懂建材，談溝通與好奇心。聽完，你會知道一面舊牆為什麼值得留下。'}]},
+      {name:'謝名棻',role:'國立臺北藝術大學建築與文化資產研究所 專任助理',eps:[
+        {title:'年輕研究者的養成：田野之間的足跡',short:'年輕研究者的養成',desc:'從書法少女到研究助理，名棻帶我們走進蘭嶼家屋、岸內糖廠與阿里山林業史的調查現場。聽完後會發現，文化資產的價值往往藏在那些不起眼的角落，而前期調查記錄，正是守住它們的第一步。'},
+        {title:'文資調查會被AI取代嗎？面對數位工具',short:'文資調查與AI',desc:'從 QGIS 圖資到 AI 工具，名棻分享數位如何改變文資調查，也談 AI 幻覺的隱憂與文資職涯的現實。每個案例都是獨一無二的文化資產，仍是需要人的判斷與溫度。'}]}
+    ];
+    info.forEach(function(d,i){
+      var g=GUESTS[i]; g.name=d.name; g.role=d.role; g.bio='';
+      d.eps.forEach(function(e,j){ g.eps[j].title=e.title; g.eps[j].short=e.short; g.eps[j].desc=e.desc; });
+    });
+  })();
+  /* 各集 YouTube 連結與章節（取自影片說明欄） */
+  (function(){
+    var V=[
+      ['zVDGIYVW_k8',[['00:00','開場與來賓介紹'],['01:25','從建築系到文化資產：鹿港老街的起點'],['05:39','什麼是「測繪」？當建築物的醫生'],['10:00','阿里山是一座知識的寶庫'],['13:12','什麼是文化資產「普查」？'],['16:19','研究學者的推薦：鹿麻產、十字路車站與鄒族部落']]],
+      ['swRF_JIBuOY',[['00:00','開場｜為什麼名字這麼長？'],['01:19','什麼是文化景觀？從山林、鐵道到製材廠'],['05:38','文資與開發：嘉義製材所遺構與公園裡的小土堆'],['10:19','追尋90年前的阿里山博物館的藏品'],['15:22','是研究者也是寶藏獵人'],['17:40','近期成就：隱身的國家重要古物〈新高山〉']]],
+      ['OrMjSw3Fp4E',[['00:00','開場：藏在日常生活中的歷史線索'],['02:47','什麼是水道？從自來水、水塔到水源路'],['07:29','走進水道：開放園區與 Jimmy 的研究緣起'],['13:50','南北水質大不同：從水垢、洗碗機到加水站'],['18:31','觀看的方式：找出歷史與自己的連結'],['24:14','老建築的再利用：如何與當代生活持續演進']]],
+      ['9bRkjXUA1Ww',[['00:00','開場：古蹟修復現場的四種角色'],['02:34','監造的日常：每一面牆都有不同修法'],['05:50','最常見的摩擦：錢、時間與業主溝通'],['08:09','工業設計的眼光：把建材當成產品來看'],['12:50','觀察與手繪：西二西三倉庫的牆面痕跡'],['18:35','修復的立場：文化資產是一段歷程']]],
+      ['NkR9_SQ8EIw',[['00:00','開場與來賓介紹'],['04:43','從書法到文資：求學轉折與北藝大的緣分'],['09:33','研究所田野與信仰緣分'],['16:07','案場故事：蘭嶼家屋與岸內糖廠'],['22:19','走進阿里山：調查現場與文資工作的成就感'],['26:54','結語與下集預告']]],
+      ['oPXZUVh27V0',[['00:00','開場與來賓介紹'],['04:11','AI 走進研究現場：工具運用與溝通課題'],['08:31','AI 的隱憂與限制：幻覺、思考外包與多語訪談'],['15:35','為何文化資產難以被 AI 取代：以不義遺址為例'],['19:22','文化資產的魅力：從金澤城市走讀談起'],['22:12','文資職涯的理想與現實']]]
+    ];
+    V.forEach(function(v,k){ var e=GUESTS[Math.floor(k/2)].eps[k%2]; e.yt='https://youtu.be/'+v[0]; e.chapters=v[1]; });
+    var g4=GUESTS[3]; g4.name='黃家俊'; g4.role='《黃金山的召喚：臺灣百萬年大地礦詩》作者'; g4.bio='';
+    var t4=[['地底的性格：九份是\u00a0E\u00a0人、金瓜石是\u00a0I\u00a0人？從地質讀懂水金九','地底的性格'],['沒有人是局外人：從淘金熱、戰俘營到地質公園，礦山與世界的牽連','沒有人是局外人']];
+    g4.eps.forEach(function(e,j){ e.soon=true; e.title=t4[j][0]; e.short=t4[j][1]; e.desc='本集即將上架，敬請期待！'; e.chapters=[]; e.photos=[]; });
+  })();
+  function epYT(i,side){ return GUESTS[i].eps[side].yt || YT; }
+  function epTitle(i,side){ var e=GUESTS[i].eps[side]; return e.title || (GUESTS[i].site+'・'+(side?'下集':'上集')); }
+  function epShort(i,side){ var e=GUESTS[i].eps[side]; return e.short || (GUESTS[i].site+'・'+(side?'下集':'上集')); }
   /* 陳柏良提供的宣傳照片 */
   GUESTS[0].eps[0].photos=[
     {src:'img/ep01-1.jpg',cap:'林業鐵路橋梁調查（19K+100m）',alt:'阿里山林業鐵路橋梁，調查人員手持白板標示位置'},
@@ -434,7 +477,7 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
   }); });
   function pad(n){return (n<10?'0':'')+n}
   /* Threads 預填文案（之後可在這裡修改） */
-  function threadsText(i,n){ return '我在聽《文化ＱＱ》EP'+pad(n)+' '+GUESTS[i].site+'・'+(n%2?'上集':'下集')+'，用不一樣的方式認識文化。'; }
+  function threadsText(i,n){ return '我在聽《文化ＱＱ》EP'+pad(n)+'〈'+epTitle(i,(n-1)%2)+'〉，用不一樣的方式認識文化。'; }
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
   function secs(t){ var m=/^(\d+):(\d{2})$/.exec(t); return m? (+m[1])*60+(+m[2]) : null; }
   var playIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg>';
@@ -450,7 +493,7 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
       '<div class="label">'+
         '<div class="label-top">'+
           '<div class="no">TAPE '+pad(i+1)+'</div>'+
-          '<div class="who"><h3>'+esc(g.site)+'</h3><span>來賓｜'+esc(g.name)+'</span><span class="tag2">本卷 2 集</span></div>'+
+          '<div class="who"><h3>'+esc(g.name)+'</h3><span>'+esc(g.role)+'</span><span class="tag2">本卷 2 集</span></div>'+
         '</div>'+
         '<div class="sides" role="tablist" aria-label="選擇集數">'+
           '<button class="side-btn" role="tab" type="button" data-side="0"><span class="sd">A 面</span><span class="sl">EP'+pad(i*2+1)+' 上集</span><span class="hint" aria-hidden="true">▶</span></button>'+
@@ -459,14 +502,14 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
         '<div class="label-body">'+
           '<div class="screen">'+
             '<div class="osd top"><span>▶ PLAY</span><span class="osd-ep"></span></div>'+
-            '<div class="screen-mid"><span class="ep"></span><a class="play-link" href="'+YT+'" target="_blank" rel="noopener">'+playIcon+'播放本集</a></div>'+
+            '<div class="screen-mid"><span class="ep"></span><span class="soon-tag" hidden>COMING SOON</span><a class="play-link" href="'+YT+'" target="_blank" rel="noopener">'+playIcon+'播放本集</a></div>'+
             '<div class="osd bottom"><span class="osd-side"></span><span class="date">\'26 11 20</span></div>'+
           '</div>'+
           '<div class="info">'+
             '<p class="kicker"></p>'+
             '<h4></h4>'+
             '<p class="desc"></p>'+
-            '<div class="meta"><span>約 20 分鐘</span></div>'+
+
             '<a class="btn yt" href="'+YT+'" target="_blank" rel="noopener">在 YouTube 觀看 ↗</a>'+
             '<div class="share" role="group" aria-label="分享本集"><span class="share-lb">分享本集</span>'+
               '<a class="sh sh-fb" target="_blank" rel="noopener">Facebook</a>'+
@@ -474,7 +517,7 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
               '<button class="sh sh-ig" type="button">Instagram</button>'+
             '</div>'+
             '<p class="share-tip" aria-live="polite" hidden></p>'+
-            '<div class="guest-line"><p class="gk">本集來賓</p><p class="gn">'+esc(g.name)+' <span>'+esc(g.role)+'</span></p><p class="gb">'+esc(g.bio)+'</p></div>'+
+            '<div class="guest-line"><p class="gk">本集來賓</p><p class="gn">'+esc(g.name)+' <span>'+esc(g.role)+'</span></p>'+(g.bio?'<p class="gb">'+esc(g.bio)+'</p>':'')+'</div>'+
           '</div>'+
         '</div>'+
         '<div class="extras">'+
@@ -490,7 +533,7 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
     });
     art.querySelector('.sh-ig').addEventListener('click',function(){
       var n=i*2+1+(+art.dataset.side||0), url=shareUrl(n), tip=art.querySelector('.share-tip');
-      var data={title:'文化ＱＱ EP'+pad(n)+'｜'+GUESTS[i].site+'・'+(n%2?'上集':'下集'), text:threadsText(i,n), url:url};
+      var data={title:'文化ＱＱ EP'+pad(n)+'｜'+epTitle(i,(n-1)%2), text:threadsText(i,n), url:url};
       function say(t){ tip.textContent=t; tip.hidden=false; clearTimeout(tip._t); tip._t=setTimeout(function(){tip.hidden=true},4000); }
       function copy(){
         if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(function(){ say('已複製本集連結，可貼到 IG 限時動態的「連結貼紙」。'); },function(){ say('本集連結：'+url); }); }
@@ -517,10 +560,20 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
     art.querySelector('.ep').textContent='EP'+pad(n);
     art.querySelector('.osd-ep').textContent='SP  EP'+pad(n);
     art.querySelector('.osd-side').textContent='SIDE '+(side?'B':'A');
-    art.querySelector('.kicker').textContent='EP'+pad(n)+' · SIDE '+(side?'B':'A');
-    art.querySelector('h4').textContent=g.site+'・'+(side?'下集':'上集');
-    art.querySelector('.desc').textContent='[本集簡介：兩三句說明本集聊了什麼、聽完會帶走什麼。]';
+    art.querySelector('.kicker').textContent='EP'+pad(n)+' · SIDE '+(side?'B':'A')+' · '+(side?'下集':'上集');
+    art.querySelector('h4').textContent=epTitle(i,side);
+    art.querySelector('.desc').textContent=g.eps[side].desc||'[本集簡介：兩三句說明本集聊了什麼、聽完會帶走什麼。]';
     art.querySelector('.play-link').setAttribute('aria-label','在 YouTube 播放 EP'+pad(n));
+    var soon=!!g.eps[side].soon;
+    art.querySelector('.play-link').href=epYT(i,side);
+    art.querySelector('.btn.yt').href=epYT(i,side);
+    art.querySelector('.play-link').hidden=soon;
+    art.querySelector('.btn.yt').hidden=soon;
+    art.querySelector('.share').hidden=soon;
+    art.querySelector('.photos').hidden=soon||!(g.eps[side].photos||[]).length;
+    art.querySelector('.tracks').hidden=soon;
+    art.querySelector('.soon-tag').hidden=!soon;
+    art.classList.toggle('is-soon',soon);
     var su=encodeURIComponent(shareUrl(n));
     art.querySelector('.sh-fb').href='https://www.facebook.com/sharer/sharer.php?u='+su;
     art.querySelector('.sh-fb').setAttribute('aria-label','分享 EP'+pad(n)+' 到 Facebook');
@@ -532,7 +585,7 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
     g.eps[side].chapters.forEach(function(c){
       var s=secs(c[0]);
       if(s===null){ html+='<li><div class="trk todo"><time>'+esc(c[0].replace(/[\[\]]/g,''))+'</time><span class="tt">'+esc(c[1])+'</span></div></li>'; }
-      else { html+='<li><a class="trk" href="'+YT+'?t='+s+'" target="_blank" rel="noopener"><time>'+esc(c[0])+'</time><span class="tt">'+esc(c[1])+'</span><span class="go">▶</span></a></li>'; }
+      else { html+='<li><a class="trk" href="'+epYT(i,side)+'?t='+s+'" target="_blank" rel="noopener"><time>'+esc(c[0])+'</time><span class="tt">'+esc(c[1])+'</span><span class="go">▶</span></a></li>'; }
     });
     ol.innerHTML=html;
     renderPhotos(art, g.eps[side].photos);
@@ -586,7 +639,8 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
   GUESTS.forEach(function(g,i){ [0,1].forEach(function(side){
     var n=i*2+1+side, a=document.createElement('a');
     a.className='epl'; a.href='#ep'+pad(n);
-    a.innerHTML='<b style="background:'+THEMES[i].title+';color:'+THEMES[i].fg+'">EP'+pad(n)+'</b><span>'+esc(g.site)+'・'+(side?'下集':'上集')+'</span>';
+    if(g.eps[side].soon){ a.classList.add('epl-soon'); a.title='Coming soon'; }
+    a.innerHTML='<b style="background:'+THEMES[i].title+';color:'+THEMES[i].fg+'">EP'+pad(n)+'</b><span>'+esc(epShort(i,side))+'</span>';
     a.addEventListener('click',function(e){ e.preventDefault(); try{history.replaceState(null,'','#ep'+pad(n))}catch(x){} route(); clack(false); });
     epl.appendChild(a);
   }); });
@@ -645,7 +699,7 @@ footer .wrap{padding-block:22px;display:flex;justify-content:space-between;gap:1
 
   /* ---------- copy mail ---------- */
   document.getElementById('copy').addEventListener('click',function(){
-    var txt='annwen0406@gmail.com', btn=this;
+    var txt='cultureqq.podcast@gmail.com', btn=this;
     function done(){ btn.textContent='已複製'; setTimeout(function(){btn.textContent='複製信箱'},1600); }
     function sel(){ var r=document.createRange(); r.selectNodeContents(document.getElementById('mail')); var s=getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent='已選取，請按複製'; }
     if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done,sel); } else sel();
